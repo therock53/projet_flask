@@ -1,26 +1,31 @@
 from crypt import methods
 import psycopg2
-from flask import Flask, jsonify, request, url_for, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, request, url_for, abort#importer Flask
+from flask_sqlalchemy import SQLAlchemy#importer SQLAlchemy
 from werkzeug.utils import redirect
 
-app = Flask(__name__)
+app = Flask(__name__)#Créer une instance de l'application
+
+#connexion à la base de données
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://lorna:password@localhost:5432/projet_flask'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG'] = True
+
+#Créer une instance de BD
 db = SQLAlchemy(app)
-# class Person(db.Model):
-#      __tablename__ = 'persons'
-#      id = db.Column(db.Integer, primary_key=True)
-#      name = db.Column(db.String(), nullable=False)
 
-
+#Creation de la table categories
 class Categorie(db.Model):
-    __tablename__ = 'categories'
+
+    __tablename__ = 'categories'#nom de la table
+
+    #Attributs de la table
     id = db.Column(db.Integer, primary_key=True)
     libelle = db.Column(db.String(), nullable=False)
     livres = db.relationship('Livre', backref="categories", lazy=True)
 
+
+    #Constructeur
     def __init__(self, id, libelle):
         self.id = id
         self.libelle = libelle
@@ -62,7 +67,7 @@ class Livre(db.Model):
         self.editeur = editeur
         self.categorie_id = categorie_id
 
-    def deleter(self):
+    def delet(self):
         db.session.delete(self)
         db.session.commit()
 
@@ -117,61 +122,6 @@ def get_all_categories():
         'total': Categorie.query.count()
     })
 
-# @app.route('/newbook',methods=['POST'])
-# def newbook():
-#     isbn=request.form.get('isbn','')
-#     titre=request.form.get('titre','')
-#     datepublication=request.form.get('datepublication','')
-#     autheur=request.form.get('autheur','')
-#     editeur=request.form.get('editeur','')
-#     livre=Livre(isbn=isbn,titre=titre,datepublication=datepublication,autheur=autheur,editeur=editeur)
-#     livre.insert()
-#     return redirect(url_for('index'))
-
-
-# @app.route('/newcategorie',methods=['POST'])
-# def newcategorie():
-#     libelle=request.form.get('libelle','')
-#     categorie=Livre(libelle=libelle)
-#     categorie.inser()
-#     return redirect(url_for('index'))
-
-
-# @app.route('/newlivre',methods=['POST'])
-# def newlivre():
-#     body=request.get_json()
-#     isbn=body.get('nom',None)
-#     titre=body.get('nom',None)
-#     datepublication=body.get('nom',None)
-#     autheur=body.get('nom',None)
-#     editeur=body.get('email',None)
-#     etudiant=Livre(isbn=isbn,titre=titre,datepublication=datepublication,autheur=autheur,editeur=editeur)
-#     etudiant.insert()
-#     etudiants=Livre.query.all()
-#     etu=[etudiant.format() for et in etudiants]
-#     return jsonify({
-#                 'succes':True,
-#                 'Livre':etu,
-#                 'total':Livre.query.count()
-
-#             })
-
-
-# @app.route('/newcat',methods=['POST'])
-# def newcat():
-#     body=request.get_json()
-#     libelle=body.get('nom',None)
-#     lib=Livre(libelle=libelle)
-#     lib.insert()
-#     ca=Livre.query.all()
-#     categ=[c.forma() for c in ca]
-#     return jsonify({
-#                 'succes':True,
-#                 'Categorie':categ,
-#                 'total':Categorie.query.count()
-
-#             })
-
 @app.route('/categories/<int:i>/livres', methods=['GET'])
 def livre_by_categorie(i):
     try:
@@ -189,17 +139,7 @@ def livre_by_categorie(i):
     except:
        return abort(400)
        
-    # p = Livre.query.filter_by(categorie_id=i).all()
-    # if p is None:
-    #         abort(404)
-    # else:
-    #         pq=[cat.format() for cat in p]
-    #         return jsonify({
-    #             'succes': True,
-    #             'books': pq,
-    #             'total': Livre.query.count()
-
-    #         })
+ 
     
 @app.route('/livres/<int:i>', methods=['GET'])
 def recherchelivre(i):
@@ -225,21 +165,20 @@ def recherchecategorie(i):
 def delete_livre(i):
     try:
         p = Livre.query.get(i)
+        print(p)
         if p is None:
             abort(404)
         else:
-            p.deleter()
+            p.delet()
             return jsonify({
                 'succes': True,
                 'delete id': i,
                 'total': Livre.query.count()
 
-            }) + '''
-            
-            <h1>SUPPRESSION EFFECTUÉE</h1>
-            '''
+            }) 
     except:
-        abort(400)
+         abort(400)
+        
 
 
 @app.route('/delete_categorie/<int:i>', methods=['GET','DELETE'])
@@ -265,19 +204,20 @@ def update_livre(i):
     try:
         body = request.get_json()
         livre = Livre.query.get(i)
-        livre.isbn = body.get("nom", None)
-        livre.titre = body.get("adresse", None)
-        livre.datepublication = body.get("email", None)
-        livre.autheur = body.get("nom", None)
-        livre.editeur = body.get("adresse", None)
-        if (livre.isbn is None or livre.titre is None or livre.datepublication is None or livre.auteur is None or livre.editeur is None):
+        livre.isbn = body.get('nom', None)
+        livre.titre = body.get('adresse', None)
+        livre.datepublication = body.get('datepublication', None)
+        livre.autheur = body.get('nom', None)
+        livre.editeur = body.get('adresse', None)
+        if (livre.isbn is None or livre.titre is None or 
+            livre.datepublication is None or livre.autheur is None or livre.editeur is None):
             abort(400)
         else:
             livre.update()
             return jsonify({
                 'succes': True,
                 'update id': i,
-                'new': livre.format()
+                'nouveau livre': livre.format()
 
             })
     except:
@@ -303,5 +243,45 @@ def update_categorie(i):
     except:
         abort(400)
 
+                
+@app.errorhandler(404)
+def not_found(error):
+            return jsonify(
+                    {
+                            "success":False,
+                            "error":404,
+                            "Cause":"Elément non trouvé"
+                    }
+            ),404
+        
+        
+@app.errorhandler(400)
+def erreur_client(errror):
+            return jsonify(
+                    {
+                            "success":False,
+                            "error":400,
+                            "Cause":"Elément envoyé non valide"
+                    }
+            ),400
+        
+@app.errorhandler(500)
+def erreur_serveur(error):
+            return jsonify(
+                    {
+                            "success":False,
+                            "error":500,
+                            "Cause":"L'appli a crashé"
+                    }
+            ),500        
+# @app.errorhandler(None)
+# def erreur_serveur(error):
+#             return jsonify(
+#                     {
+#                             "success":False,
+#                             "error":NoneType,
+#                             "Cause":"Identifiant invalide"
+#                     }
+#             )
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,5 @@
+{
+    "karateIDE.karateCli.karateEnv": "",
+    "karateIDE.karateCli.karateOptions": "",
+    "karateIDE.karateCli.mockServerOptions": "-p 3000"
+}
