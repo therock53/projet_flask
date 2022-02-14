@@ -203,14 +203,16 @@ def delete_categorie(i):
 def update_livre(i):
     try:
         body = request.get_json()
+      
         livre = Livre.query.get(i)
+        print(livre)
         livre.isbn = body.get('nom', None)
+        print(livre.isbn)
         livre.titre = body.get('adresse', None)
         livre.datepublication = body.get('datepublication', None)
         livre.autheur = body.get('nom', None)
         livre.editeur = body.get('adresse', None)
-        if (livre.isbn is None or livre.titre is None or 
-            livre.datepublication is None or livre.autheur is None or livre.editeur is None):
+        if (livre.isbn is None or livre.titre is None or livre.datepublication is None or livre.autheur is None or livre.editeur is None):
             abort(400)
         else:
             livre.update()
@@ -224,13 +226,14 @@ def update_livre(i):
         abort(400)
 
 
-@app.route('/update_categorie/<int:i>', methods=['PATCH'])
+@app.route('/update_categorie/<int:i>', methods=['GET','PATCH'])
 def update_categorie(i):
     try:
         body = request.get_json()
         categorie = Categorie.query.get(i)
         categorie.libelle = body.get("libelle", None)
-        if (categorie.libelle in None):
+        if (categorie.libelle is None):
+            print(categorie)
             abort(400)
         else:
             categorie.updat()
