@@ -120,7 +120,7 @@ L'API vous renvoie 4 types d'erreur:
     GENERAL:
         Supprimer un element si l'ID existe. Retourne l'ID du livre supprimé, la valeur du succès et le nouveau total.
 
-        EXEMPLE: curl -X DELETE https://bookapi-v1.herokuapp.com/books/4
+        EXEMPLE: curl -X DELETE https://127.0.0.1:5000/books/4
 ```
     {
         "id_book": 4,
