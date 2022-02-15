@@ -47,7 +47,7 @@ class Categorie(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
+#Création de la classe Livre
 class Livre(db.Model):
     __tablename__ = 'livres'
     id = db.Column(db.Integer, primary_key=True)
@@ -58,7 +58,7 @@ class Livre(db.Model):
     editeur = db.Column(db.String(), nullable=False)
     categorie_id = db.Column(db.Integer, db.ForeignKey(
         'categories.id'), nullable=False)
-
+    #Constructeur
     def __init__(self, isbn, titre, datepublication, autheur, editeur, categorie_id):
         self.isbn = isbn
         self.titre = titre
@@ -95,12 +95,13 @@ db.create_all()
 @app.route('/', methods=['GET'])
 def Accueil():
     return '''
-    <h1> ARCHIVE DE LECTURE A DISTANCE</h1>
-    <p>Un prototype d'API pour les  romans .</p>
-
+    <h1>
+    Projet de construction d'une Application de Progammation d'Interface</br> permettant de gérer les livres d'une bibliothèque.
+     Cette API a pour but </br>de classer les livres par catégories, de rechercher les livres par leur titre,</br> d'enregistrer un nouveau livre, de créer des catégories.
+    </h1>
     '''
 
-
+#Affichage de tous les livres
 @app.route('/livres/', methods=['GET'])
 def get_all_livres():
     livres = Livre.query.all()
@@ -111,7 +112,7 @@ def get_all_livres():
         'total': Livre.query.count()
     })
 
-
+#Affichage de toutes les categories de livres
 @app.route('/categories/', methods=['GET'])
 def get_all_categories():
     cate = Categorie.query.all()
@@ -122,6 +123,7 @@ def get_all_categories():
         'total': Categorie.query.count()
     })
 
+#Affichage des livres par categorie
 @app.route('/categories/<int:i>/livres', methods=['GET'])
 def livre_by_categorie(i):
     try:
@@ -140,7 +142,7 @@ def livre_by_categorie(i):
        return abort(400)
        
  
-    
+#Affichage d'un livre spécifiques 
 @app.route('/livres/<int:i>', methods=['GET'])
 def recherchelivre(i):
     p = Livre.query.get(i)
@@ -150,7 +152,7 @@ def recherchelivre(i):
         'Livre': pq,
     })
 
-
+#Affichage d'une categorie spécifique
 @app.route('/categories/<int:i>', methods=['GET'])
 def recherchecategorie(i):
     p = Categorie.query.get(i)
@@ -160,7 +162,7 @@ def recherchecategorie(i):
         'Categorie': pq,
     })
 
-
+#Suppression d'un livre
 @app.route('/delete_livre/<int:i>', methods=['GET','DELETE'])
 def delete_livre(i):
     try:
@@ -180,7 +182,7 @@ def delete_livre(i):
          abort(400)
         
 
-
+#Suppression d'une categorie
 @app.route('/delete_categorie/<int:i>', methods=['GET','DELETE'])
 def delete_categorie(i):
     try:
@@ -198,23 +200,23 @@ def delete_categorie(i):
     except:
         abort(400)
 
-
+#Modification d'un livre
 @app.route('/update_livre/<int:i>', methods=['GET','PATCH'])
 def update_livre(i):
+    body = request.get_json()
+    livre = Livre.query.get(i)
     try:
-        body = request.get_json()
-      
-        livre = Livre.query.get(i)
-        print(livre)
-        livre.isbn = body.get('nom', None)
-        print(livre.isbn)
-        livre.titre = body.get('adresse', None)
-        livre.datepublication = body.get('datepublication', None)
-        livre.autheur = body.get('nom', None)
-        livre.editeur = body.get('adresse', None)
-        if (livre.isbn is None or livre.titre is None or livre.datepublication is None or livre.autheur is None or livre.editeur is None):
+        livre.isbn = body.get('isbn', None)
+        livre.titre = body.get('titre', None)
+        livre.datepublication = body.get('date_publication', None)
+        livre.autheur = body.get('nomAuteur', None)
+        livre.editeur = body.get('nomEditeur', None)
+        print('bonjour')
+        if (livre.isbn is None or livre.titre is None or 
+        livre.datepublication is None or livre.autheur is None or livre.editeur is None):
             abort(400)
         else:
+            
             livre.update()
             return jsonify({
                 'succes': True,
@@ -224,8 +226,9 @@ def update_livre(i):
             })
     except:
         abort(400)
+        
 
-
+#Modification d'une categorie
 @app.route('/update_categorie/<int:i>', methods=['GET','PATCH'])
 def update_categorie(i):
     try:
@@ -245,6 +248,24 @@ def update_categorie(i):
             })
     except:
         abort(400)
+
+# try:
+#         body = request.get_json()
+#         categorie = Categorie.query.get(i)
+#         categorie.libelle = body.get("libelle", None)
+#         if (categorie.libelle is None):
+#             print(categorie)
+#             abort(400)
+#         else:
+#             categorie.updat()
+#             return jsonify({
+#                 'succes': True,
+#                 'update id': i,
+#                 'new': categorie.forma()
+
+#             })
+#     except:
+#         abort(400)
 
                 
 @app.errorhandler(404)
