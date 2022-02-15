@@ -47,69 +47,71 @@ L'API vous renvoie 4 types d'erreur:
 . 404: Not found
 
 ## Endpoints
-. ## GET/books
+. ## /livres
 
     GENERAL:
         Cet endpoint retourne la liste des objets livres, la valeur du succès et le total des livres. 
     
         
-    EXEMPLE: curl https://bookapi-v1.herokuapp.com/books
+    EXEMPLE: curl https://127.0.0.1:5000/livres
 ```
         {
-    "books": [
+    "Livre": [
         {
-            "auteur": "Gege Atakumi",
-            "code_ISBN": "979-1-0328",
-            "date_publication": "03-02-2022",
-            "editeur": "Ki-oon",
-            "id": 2,
-            "titre": "Jujutsu Kaisen T13"
+            "ISBN": "978-2-8891-5263-6",
+            "cat": 1,
+            "date_publication": "Fri, 01 Mar 2019 00:00:00 GMT",
+            "nomAuteur": "Walter Issacson",
+            "nomEditeur": "Quanto",
+            "titre": "LÉONARDO DE VINCI"
         },
         {
-            "auteur": "Louis Saulnier, Théodore Gringoire",
-            "code_ISBN": "978-2-0802",
-            "date_publication": "26-02-2022",
-            "editeur": "Flammarion",
-            "id": 3,
-            "titre": "Le répertoire de la cuisine"
+            "ISBN": "978-2-3657-7710-0",
+            "cat": 2,
+            "date_publication": "Fri, 11 Feb 2022 00:00:00 GMT",
+            "nomAuteur": " O'Neil Dennis",
+            "nomEditeur": "Urban Comics",
+            "titre": "Batman - Tales of the Demon"
         },
         {
-            "auteur": "Katia Bricka",
-            "code_ISBN": "978-2-8977",
-            "date_publication": "25-02-2022",
-            "editeur": "Modus Vivendi",
-            "id": 4,
-            "titre": "La recette parfaite"
+            "ISBN": "1222",
+            "cat": 2,
+            "date_publication": "Sat, 01 Feb 2020 00:00:00 GMT",
+            "nomAuteur": "alko",
+            "nomEditeur": "ki",
+            "titre": "jjd"
         },
         {
-            "auteur": "Azychika, Takumi Fukui",
-            "code_ISBN": "979-1-0327",
-            "date_publication": "03-02-2022",
-            "editeur": "Ki-oon",
-            "id": 1,
-            "titre": "Jujutsu Kaisen"
+            "ISBN": "127-022-021-202-10",
+            "cat": 1,
+            "date_publication": "Wed, 02 Feb 2022 00:00:00 GMT",
+            "nomAuteur": "Ferdinand OYONO",
+            "nomEditeur": "David PILON",
+            "titre": "une vie de boy"
         }
     ],
-    "status_code": 200,
-    "success": true,
-    "total_books": 4
+    "succes": true,
+    "total": 4
 }
 ```
 
-.##GET/books(book_id)
+.##GET/livre(id)
   GENERAL:
   Cet endpoint permet de récupérer les informations d'un livre particulier s'il existe par le biais de l'ID.
 
-    EXEMPLE: https://bookapi-v1.herokuapp.com/books/3
+    EXEMPLE: https://127.0.0.1:5000/livres/3
 ```
     {
-        "auteur": "Louis Saulnier, Théodore Gringoire",
-        "code_ISBN": "978-2-0802",
-        "date_publication": "26-02-2022",
-        "editeur": "Flammarion",
-        "id": 3,
-        "titre": "Le répertoire de la cuisine"
-    }
+    "Livre": {
+        "ISBN": "978-2-8891-5263-6",
+        "cat": 1,
+        "date_publication": "Fri, 01 Mar 2019 00:00:00 GMT",
+        "nomAuteur": "Walter Issacson",
+        "nomEditeur": "Quanto",
+        "titre": "LÉONARDO DE VINCI"
+    },
+    "succes": true
+}
 ```
 
 
@@ -127,22 +129,23 @@ L'API vous renvoie 4 types d'erreur:
     }
 ```
 
-. ##PATCH/books(book_id)
+. ##PATCH/livre(livre_id)
   GENERAL:
   Cet endpoint permet de mettre à jour, le titre, l'auteur, et l'éditeur du livre.
   Il retourne un livre mis à jour.
 
   EXEMPLE.....Avec Patch
-  ``` curl -X PATCH https://bookapi-v1.herokuapp.com/books/1 -H "Content-Type:application/json" -d '{"auteur": "Azychika, Takumi Fukui","editeur": "Ki-oon","titre": "Jujutsu Kaisen"}'
+  ``` curl -X PATCH https://127.0.0.1:5000/livres/3-H "Content-Type:application/json" -d '{
+        "id_book": 4,
+        "new_total": 3,
+        "success": true
+    }'
   ```
   ```
-    {
-        "auteur": "Azychika, Takumi Fukui",
-        "code_ISBN": "979-1-0327",
-        "date_publication": "03-02-2022",
-        "editeur": "Ki-oon",
-        "id": 1,
-        "titre": "Jujutsu Kaisen"
+   {
+        "id_book": 4,
+        "new_total": 3,
+        "success": true
     }
     ```
 
@@ -152,61 +155,60 @@ L'API vous renvoie 4 types d'erreur:
         Cet endpoint retourne la liste des categories de livres, la valeur du succès et le total des categories disponibles. 
     
         
-    EXEMPLE: curl https://bookapi-v1.herokuapp.com/categories
+    EXEMPLE: curl https://127.0.0.1:5000/categories
 
         {
-    "category": [
+    "Categorie": [
         {
-            "categorie": "Litterature",
-            "id": 1
+            "id": 2,
+            "libelle": "Bande dessinée"
         },
         {
-            "categorie": "Humour",
-            "id": 2
+            "id": 4,
+            "libelle": "Cuisine"
         },
         {
-            "categorie": "Tourisme et voyage",
-            "id": 3
+            "id": 5,
+            "libelle": "Developpement  personnel"
         },
         {
-            "categorie": "Histoire",
-            "id": 5
+            "id": 6,
+            "libelle": "Droit et economie"
         },
         {
-            "categorie": "Cuisine",
-            "id": 6
+            "id": 7,
+            "libelle": "Humour"
         },
         {
-            "categorie": "Droit et Economie",
-            "id": 7
+            "id": 8,
+            "libelle": "Jeunesse"
         },
         {
-            "categorie": "Informatique et internet",
-            "id": 8
+            "id": 10,
+            "libelle": "Théâtre"
         },
         {
-            "categorie": "Sciences sociales",
-            "id": 9
+            "id": 13,
+            "libelle": "Informatique et Internet"
         },
         {
-            "categorie": "Essais et documents",
-            "id": 10
+            "id": 14,
+            "libelle": "fiction"
         },
         {
-            "categorie": "Religion et spiritualité",
-            "id": 11
+            "id": 9,
+            "libelle": "policier"
         },
         {
-            "categorie": "Art, musique et cinéma",
-            "id": 12
+            "id": 1,
+            "libelle": "film et serie"
         },
         {
-            "categorie": "Bandes Dessinées",
-            "id": 4
+            "id": 19,
+            "libelle": "testrer"
         }
     ],
-    "status_code": 200,
-    "success": true,
+    "succes": true,
     "total": 12
 }
 ```
@@ -215,12 +217,15 @@ L'API vous renvoie 4 types d'erreur:
   GENERAL:
   Cet endpoint permet de récupérer les informations d'une categorie si elle existe par le biais de l'ID.
 
-    EXEMPLE: https://bookapi-v1.herokuapp.com/categories/6
+    EXEMPLE: https://127.0.0.1:5000/categories/6
 ```
     {
-        "categorie": "Cuisine",
-        "id": 6
-    }
+    "Categorie": {
+        "id": 6,
+        "libelle": "Droit et economie"
+    },
+    "succes": true
+}
 ```
 
 . ## DELETE/categories (categories_id)
@@ -228,7 +233,7 @@ L'API vous renvoie 4 types d'erreur:
     GENERAL:
         Supprimer un element si l'ID existe. Retourne l'ID da la catégorie supprimé, la valeur du succès et le nouveau total.
 
-        EXEMPLE: curl -X DELETE https://bookapi-v1.herokuapp.com/categories/11
+        EXEMPLE: curl -X DELETE https://127.0.0.1:5000/categories/11
 ```
     {
         "id_cat": 11,
@@ -244,7 +249,7 @@ L'API vous renvoie 4 types d'erreur:
   Il retourne une nouvelle categorie avec la nouvelle valeur.
 
   EXEMPLE.....Avec Patch
-  ``` curl -X PATCH 'https://bookapi-v1.herokuapp.com/categories/4' -H "Content-Type:application/json" -d '{"categorie": "Bandes Dessinées"}'
+  ``` curl -X PATCH 'https://127.0.0.1:5000/categories/4' -H "Content-Type:application/json" -d '{"categorie": "Bandes Dessinées"}'
   ```
   ```
     {
@@ -257,7 +262,7 @@ L'API vous renvoie 4 types d'erreur:
   Cet endpoint permet de lister les livres appartenant à une categorie donnée.
   Il renvoie la classe de la categorie et les livres l'appartenant.
 
-    EXEMPLE: https://bookapi-v1.herokuapp.com/categories/4/books
+    EXEMPLE: https://127.0.0.1:5000/categories/4/books
 ```
     {
     "Status_code": 200,
